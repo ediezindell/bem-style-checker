@@ -2,6 +2,8 @@
   const checkList = {
     margin: "0px",
     position: "static",
+    "max-width": "none",
+    "max-height": "none",
   };
 
   const isBlockClassName = (className) => /^[a-zA-Z]+$/.test(className);
