@@ -22,7 +22,6 @@
     testElement.setAttribute("class", blockClassName);
     testWrapper.appendChild(testElement);
 
-    // marginのチェック
     const margin = getComputedStyle(testElement).margin;
     if (margin !== "0px") {
       alert(
@@ -31,7 +30,13 @@
       isOk = false;
     }
 
-    // TODO: positionのチェック
+    const position = getComputedStyle(testElement).position;
+    if (position !== "static") {
+      alert(
+        `\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n\nBlock要素のセレクタ (.${blockClassName}) にposition (${position}) が付いています！！\n\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨`
+      );
+      isOk = false;
+    }
 
     // TODO: その他のチェック
   });
