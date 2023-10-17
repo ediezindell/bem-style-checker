@@ -1,4 +1,9 @@
 (() => {
+  const checkList = {
+    margin: "0px",
+    position: "static",
+  };
+
   const isBlockClassName = (className) => /^[a-zA-Z]+$/.test(className);
 
   let blockClassList = new Set();
@@ -22,21 +27,16 @@
     testElement.setAttribute("class", blockClassName);
     testWrapper.appendChild(testElement);
 
-    const margin = getComputedStyle(testElement).margin;
-    if (margin !== "0px") {
-      alert(
-        `\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n\nBlock要素のセレクタ (.${blockClassName}) にmargin (${margin}) が付いています！！\n\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨`
-      );
-      isOk = false;
-    }
-
-    const position = getComputedStyle(testElement).position;
-    if (position !== "static") {
-      alert(
-        `\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n\nBlock要素のセレクタ (.${blockClassName}) にposition (${position}) が付いています！！\n\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨`
-      );
-      isOk = false;
-    }
+    const computedStyle = getComputedStyle(testElement);
+    Object.entries(checkList).forEach(([property, defaultValue]) => {
+      const computedValue = computedStyle?.[property] ?? "nothing";
+      if (computedValue !== defaultValue) {
+        alert(
+          `\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n\nBlock要素のセレクタ (.${blockClassName}) に${property} (${computedValue}) が付いています！！\n\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨`
+        );
+        isOk = false;
+      }
+    });
 
     // TODO: その他のチェック
   });
