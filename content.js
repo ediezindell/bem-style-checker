@@ -29,7 +29,7 @@
 
     const computedStyle = getComputedStyle(testElement);
     Object.entries(checkList).forEach(([property, defaultValue]) => {
-      const computedValue = computedStyle?.[property] ?? "nothing";
+      const computedValue = computedStyle.getPropertyValue(property);
       if (computedValue !== defaultValue) {
         alert(
           `\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n\nBlock要素のセレクタ (.${blockClassName}) に${property} (${computedValue}) が付いています！！\n\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨`
