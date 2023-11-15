@@ -1,0 +1,9 @@
+body {
+  width: 80%;
+  margin: 0 auto;
+}
+#excludeClassListInput {
+  display: block;
+  width: 100%;
+  height: 80vh;
+}

@@ -1,4 +1,4 @@
-(() => {
+(async () => {
   "use strict";
 
   // スタイルに関するチェックリスト
@@ -9,9 +9,11 @@
       "max-width": "none",
       "max-height": "none",
     },
-    element: {},
-    modifier: {},
+    element: {}, // 特になし
+    modifier: {}, // 特になし
   };
+
+  const excludeClassList = await load_setting();
 
   // BEMの命名パターン
   const blockClassPattern = /^(?<block>[a-zA-Z]+)$/;
@@ -19,7 +21,7 @@
   const modifierClassPattern =
     /^(?<base>[a-zA-Z]+(__[a-zA-Z]+)?)--(?<modifier>[a-zA-Z]+)$/;
 
-  // BEMのどの種類か判定するための
+  // BEMのどの種類か判定するための処理
   const isBlockClassName = (className) => blockClassPattern.test(className);
   const isElementClassName = (className) => elementClassPattern.test(className);
   const isModifierClassName = (className) =>
@@ -31,6 +33,8 @@
 
   let isOk = true;
 
+  const messages = [];
+
   const styleCheck = (className, type) => {
     const testElement = document.createElement("div");
     testElement.setAttribute("class", className);
@@ -41,8 +45,8 @@
     Object.entries(styleCheckList[type]).forEach(([property, defaultValue]) => {
       const computedValue = computedStyle.getPropertyValue(property);
       if (computedValue !== defaultValue) {
-        alert(
-          `\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n\n${type}要素のセレクタ (.${className}) に${property} (${computedValue}) が付いています！！\n\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨`
+        messages.push(
+          `${type}要素のセレクタ (.${className}) に${property} (${computedValue}) が付いています！！`
         );
         isOk = false;
       }
@@ -90,8 +94,14 @@
   document.querySelectorAll("*").forEach((e) => {
     Array.from(e.classList.values()).forEach((className) => {
       if (!isOk) {
-        return false;
+        return;
       }
+
+      // 除外対象のclassはスキップ
+      if (excludeClassList.includes(className)) {
+        return;
+      }
+
       // Block要素
       if (isBlockClassName(className)) {
         blockClassList.add(className);
@@ -104,8 +114,8 @@
         // Block要素の子要素として存在しているかチェック
         const hasParentBlock = checkParentBlock(e, className);
         if (!hasParentBlock) {
-          alert(
-            `\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n\nelement要素 (${className}) の親にblock要素がありません！！\n\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨`
+          messages.push(
+            `element要素 (${className}) の親にblock要素がありません！！`
           );
           isOk = false;
         }
@@ -117,14 +127,14 @@
 
         const isMultiClass = checkMultiClass(e, className);
         if (!isMultiClass) {
-          alert(
-            `\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n\nmodifier要素 (${className}) がマルチクラスになっていません！！\n\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨`
+          messages.push(
+            `modifier要素 (${className}) がマルチクラスになっていません！！`
           );
           isOk = false;
         }
       } else {
         // どれでもない場合
-        alert(`class名 ${className} がBEMの命名に沿っていません！`);
+        messages.push(`class名 ${className} がBEMの命名に沿っていません！`);
       }
     });
   });
@@ -141,6 +151,7 @@
   testWrapper.remove();
 
   if (isOk) {
-    alert("OK!");
+    messages.push("OK!");
   }
+  alert(messages.join("\n"));
 })();

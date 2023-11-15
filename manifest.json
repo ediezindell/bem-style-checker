@@ -6,7 +6,7 @@
   "background": {
     "service_worker": "register.js"
   },
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "action": {
     "default_title": "run script"
   },
@@ -17,8 +17,9 @@
   },
   "content_scripts": [
     {
-      "js": ["content.js"],
+      "js": ["setting.js", "content.js"],
       "matches": ["http://localhost:*/*"]
     }
-  ]
+  ],
+  "options_page": "options.html"
 }
